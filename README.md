@@ -15,12 +15,13 @@ This code implements the genetic association studeis via QIF with multiple longi
 #########################################################################
 ####################### Generate Demo Data  #############################
 #########################################################################
+source("./mplvc_functions.R")
+
 N=200
 m=5
 pr=0.3
 nul=0.001
 nul2=0
-
 
 data=obs_sim(N,m,pr,rho_vec=c(0.5,0.5,0.2),tau=0.2,sigma_vec=c(sqrt(0.1),sqrt(0.1)),alpha_vec=c(0.2,0.3),nul,nul2)
 
@@ -33,7 +34,7 @@ mvec=data$mvec # number of repeated measurements for each subject
 mvec0=data$mvec0 # starting position for the data block for each subject
 mvec1=data$mvec1 # ending position for the data block for each subject
 
-source("./mplvc_functions.R")
+
 
 ###################################################
 ####  Model selection    ##########################
