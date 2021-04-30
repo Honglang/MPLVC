@@ -1,10 +1,10 @@
-# MPLVC: Multivariate Partial Linear Varying Coefficients Model for Genetic Association Studies with Multiple Longitudinal Traits
+# MPLVC: Multivariate Partial Linear Varying Coefficients Model for Gene-Environmental Interactions with Multiple Longitudinal Traits
 
 This code implements the genetic association studeis via QIF with multiple longitudinal traits using partial linear VC models.
 
 ## Example
 
-* Prepare you data into the format: multivariate traits in a list, variable of the varying coefficients, genetic variant, and other covariates
+* Prepare your data into the format: multivariate traits in a list, variable of the varying coefficients, genetic variant, and other covariates
 
 * Choose the model choice: number of knots as well as degree for B-spline; working correlation for QIF; GCV to select the penalty parameter for overfitting
 
