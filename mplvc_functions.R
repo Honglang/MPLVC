@@ -5,6 +5,10 @@ library("MASS")
 library("mvtnorm")
 library("Matrix")
 
+library(tidyverse)
+library(stringr)
+library(huge)
+
 myspline = function(xx, K, d){
   Jn = d+K+1
   
@@ -1851,3 +1855,73 @@ marginal_test_interaction <- function(t, Z, y,mvec, mvec0,mvec1, G, K0, d0, K1, 
 }
 
 
+obs_sim=function(N,m,pr,rho_vec,tau,sigma_vec,alpha_vec,nul,nul2){
+  # N = 200
+  # m = 10 
+  
+  id = rep(seq(1,N,1),rep(m,N))
+  mvec = rep(m,N)
+  Nobs = sum(mvec)
+  mvec0 = cumsum(c(1, mvec[-N])) #start loc for each id
+  mvec1 = cumsum(mvec) #end loc for each id
+  
+  Z = matrix(runif(Nobs,0,1),ncol=1)
+  
+  G0 = sample(c(0,1,2), size = N, replace = T, prob=c(pr^2, 2*pr*(1-pr), (1-pr)^2))
+  G = rep(G0,mvec) 
+  
+  # t0 = seq(1,m,1)/m
+  # t = rep(t0,N)    
+  t=c(replicate(N,sort(runif(m))))
+  
+  rho1=rho_vec[1]
+  rho2=rho_vec[2]
+  rho12=rho_vec[3]
+  sigma1=sigma_vec[1]
+  sigma2=sigma_vec[2]
+  
+  
+  R1 = matrix(rho1,m,m)
+  R2 = matrix(rho2,m,m) 
+  R12 = matrix(rho12,m,m) 
+  diag(R1)=1
+  diag(R2)=1
+  diag(R12)=tau
+  
+  sigma11 = (sigma1^2)*R1
+  sigma22 = (sigma2^2)*R2
+  sigma12 = sigma1*sigma2*R12
+  
+  block1 = cbind(sigma11,sigma12)
+  block2 = cbind(sigma12,sigma22)
+  VAR = rbind(block1,block2)
+  
+  
+  # covdata=huge.generator(N,d=2*m,graph="cluster")
+  # temp=covdata$data
+  # cat("covariance of the error:")
+  # print(covdata$sigma)
+  temp = rmvnorm(N,mean=rep(0,2*m), sigma=VAR)
+  eps1 = as.vector(t(temp[,1:m]))
+  eps2 = as.vector(t(temp[,(m+1):(2*m)]))
+  
+  beta1_0 = 0.5*cos(2*pi*t)
+  beta1_1 = nul*sin(pi*(t-0.2))+nul2
+  
+  beta2_0 = sin(pi*t)-0.5
+  beta2_1 = nul*cos(pi*t-0.8)+nul2
+  
+  
+  
+  alpha1=alpha_vec[1]
+  alpha2=alpha_vec[2]
+  
+  #eps_add=rlnorm(2*N*m, 0,1)-exp(1^2/2)
+  
+  y1 = beta1_0 + beta1_1*G + alpha1*Z + eps1#+eps_add[1:(N*m)]    # full model
+  y2 = beta2_0 + beta2_1*G + alpha2*Z + eps2#+eps_add[-(1:(N*m))]    
+  
+  
+  ylist=list(y1,y2)
+  return(list(ylist=ylist,t=t,G=G,Z=Z,mvec=mvec,mvec0=mvec0,mvec1=mvec1))
+}
