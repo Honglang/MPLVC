@@ -4,6 +4,13 @@ This code implements the genetic association studeis via QIF with multiple longi
 
 ## Example
 
+* Prepare you data into the format: multivariate traits in a list, variable of the varying coefficients, genetic variant, and other covariates
+
+* Choose the model choice: number of knots as well as degree for B-spline; working correlation for QIF; GCV to select the penalty parameter for overfitting
+
+* Apply our proposed method for modeling estimation and testing
+
+
 ```r
 #########################################################################
 ####################### Generate Demo Data  #############################
